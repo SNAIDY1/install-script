@@ -1,9 +1,11 @@
 #!/bin/bash
-rootPartition=""
-efiPartition=""
-swapPartition=""
-region=""
-city=""
+rootPartition="vda1"
+swapPartition="vda2"
+efiPartition="vda3"
+windiowManager="" # like i3wm and dwm
+displayManager="" # like sddm
+installPackages="base base-devel linux linux-firmware git vim neovim neofetch 
+                 xorg xorg-xprop xorg-xset sudo firefox man-db man-pages" # This Packages You Want To Install
 host=""
 
 loadkeys us
@@ -17,10 +19,9 @@ mount /dev/$rootPartition /mnt
 mount --mkdir /dev/$efiPartition /mnt/boot
 swapon /dev/$swapPartition
 
-pacstrap -K /mnt base base-devel linux linux-firmware git vim neovim neofetch xorg xorg-xprop xorg-xset sudo firefox man-db man-pages
-
+pacstrap -K /mnt $installPackages $windiowManager $displayManager
 genfstab -U /mnt >>/mnt/etc/fstab
-ln -sf /usr/share/zoneinfo/Region/City /mnt/etc/localtime
+ln -sf /usr/share/zoneinfo/UTC /mnt/etc/localtime
 
 echo LANG=en_US.UTF-8 >>/mnt/etc/locale.conf
 echo $host >>/mnt/etc/hostname
@@ -31,4 +32,5 @@ arch-chroot /mnt
 mkinitcpio -P
 passwd
 
-echo Please Install A Boot Loader
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
