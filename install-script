@@ -1,0 +1,34 @@
+#!/bin/bash
+rootPartition=""
+efiPartition=""
+swapPartition=""
+region=""
+city=""
+host=""
+
+loadkeys us
+cfdisk
+
+mkfs.ext4 /dev/$rootPartition
+mkswap /dev/$swapPartition
+mkfs.fat -F 32 /dev/$efiPartition
+
+mount /dev/$rootPartition /mnt
+mount --mkdir /dev/$efiPartition /mnt/boot
+swapon /dev/$swapPartition
+
+pacstrap -K /mnt base base-devel linux linux-firmware git vim neovim neofetch xorg xorg-xprop xorg-xset sudo firefox man-db man-pages
+
+genfstab -U /mnt >>/mnt/etc/fstab
+ln -sf /usr/share/zoneinfo/Region/City /mnt/etc/localtime
+
+echo LANG=en_US.UTF-8 >>/mnt/etc/locale.conf
+echo $host >>/mnt/etc/hostname
+
+echo Changing The Root To /mnt
+arch-chroot /mnt
+
+mkinitcpio -P
+passwd
+
+echo Please Install A Boot Loader
