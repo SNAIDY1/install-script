@@ -4,18 +4,14 @@
 #                       Arch Linux Intallation Script
 #----------------------------------------------------------------------------
 
-# --- Color ---
-BLUE="^[[34m"
-GREEN="^[[32m"
-RED="^[[31m"
-END="^[[0m"
+
 
 # --- Step 1 : Keybaord ---
 loadkeys us
 
 # --- Step 2 : Disk ---
 lsblk
-read -p "$BLUE Disk: $END" disk
+read -p "Disk: " disk
 parted -s /dev/$disk mklabel gpt
 parted -s /dev/$disk mkpart primary fat32 1MiB 1025MiB
 parted -s /dev/$disk set 1 esp on
@@ -45,14 +41,14 @@ echo "en_US.UTF-8 UTF-8" >>/mnt/etc/locale.gen
 arch-chroot /mnt locale-gen
 
 # --- Step 9 : Hostname ---
-read -p "$BLUE hostname: $END" hostname
+read -p "hostname: " hostname
 echo "$hostname" >>/mnt/etc/hostname
 
 # --- Step 10 : Root password ---
 arch-chroot /mnt passwd
 
 # --- Step 11 : Username and password---
-read -p "$BLUE username: $END" username
+read -p "username: " username
 arch-chroot /mnt useradd -m -G users,storage,video,audio,wheel -s /bin/bash "$username"
 arch-chroot /mnt passwd "$username"
 
@@ -86,4 +82,4 @@ elif [ "$displayManager" == "lightdm" ]; then
 fi
 
 # --- Finish ---
-echo "Made Arch Linux Discord:.t5a Reboot now!"
+echo "Made By: Arch Linux, Discord: .t5a\nSNAIDY/Moayd, Discord: eax3\n Reboot now!"
