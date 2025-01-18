@@ -10,7 +10,7 @@ ENDCOLORING="\e[0m"
 rootPartition="vda1"
 swapPartition="vda2"
 efiPartition="vda3"
-windiowManager="" # like i3wm and dwm
+windowManager="" # like i3wm and dwm
 displayManager="" # like sddm
 installPackages="base base-devel linux linux-firmware git vim neovim neofetch 
                  xorg xorg-xprop xorg-xset sudo firefox man-db man-pages" # This Packages You Want To Install
