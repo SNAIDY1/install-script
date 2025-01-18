@@ -39,8 +39,8 @@ arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 arch-chroot /mnt systemctl enable NetworkManager
 echo "Choose Window Manager: "
-Select WM i3 awesomewm bspwm
-if [ -n "$WM" ] ;then
+Select WM i3 awesomewm bspwm; do
+if [ -n "$WM" ]; then
    arch-chroot /mnt pacman -S --noconfirm $WM
    break
 else
