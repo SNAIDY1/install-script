@@ -38,14 +38,17 @@ arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootlo
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 arch-chroot /mnt systemctl enable NetworkManager
+
+
 echo "Choose Window Manager: "
-Select WM i3 awesomewm bspwm; do
-if [ -n "$WM" ]; then
-   arch-chroot /mnt pacman -S --noconfirm $WM
-   break
-else
-echo "Please Choose From 1 to 3"
-fi
+select WM in i3 awesomewm bspwm
+do
+   if [ -n "$WM" ]; then
+      arch-chroot /mnt pacman -S --noconfirm $WM
+      break
+   else
+      echo "Please Choose From 1 to 3"
+   fi
 done
 
 
