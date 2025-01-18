@@ -17,7 +17,7 @@ mount /dev/${disk}2 /mnt
 mount --mkdir /dev/${disk}1 /mnt/boot
 
 pacstrap -K /mnt base base-devel linux linux-firmware git vim neovim neofetch \
-          xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub efibootmgr networkmanager
+          xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub efibootmgr networkmanager alaritty
 
 genfstab -U /mnt >> /mnt/etc/fstab
 ln -sf /usr/share/zoneinfo/UTC /mnt/etc/localtime
