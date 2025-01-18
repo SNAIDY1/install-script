@@ -30,7 +30,7 @@ mkfs.fat -F 32 /dev/$efiPartition
 
 mount /dev/$rootPartition /mnt
 mount --mkdir /dev/$efiPartition /mnt/boot
-swapon /dev/$swapPartition
+#swapon /dev/$swapPartition
 
 pacstrap -K /mnt $installPackages $windiowManager $displayManager -y
 genfstab -U /mnt >>/mnt/etc/fstab
