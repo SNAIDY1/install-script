@@ -82,4 +82,4 @@ elif [ "$displayManager" == "lightdm" ]; then
 fi
 
 # --- Finish ---
-echo "Made By: Arch Linux, Discord: .t5a\nSNAIDY/Moayd, Discord: eax3\n Reboot now!"
+echo "Made By: Arch Linux, Discord: .t5a\nSNAIDY/Moayd, Discord: eax3\n\nReboot now!"
