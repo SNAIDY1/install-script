@@ -40,7 +40,14 @@ arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 arch-chroot /mnt systemctl enable NetworkManager
 
 read -p "display manager (sddm,lightdm): " displayManager
-read -p "window manager (i3,dwm): " windowManager
+
+if [ "$displayManager" == "sddm" ]; then
+    arch-chroot /mnt pacman -S --noconfirm sddm
+elif [ "$displayManager" == "lightdm" ]; then
+    arch-chroot /mnt pacman -S --noconfirm lightdm lightdm-gtk-greeter
+elif [ "$displayManager" == "i3" ]; then
+    arch-chroot /mnt pacman -S --noconfirm i3-wm i3status dmenu
+fi
 
 sudo pacman -S $displayManager $windowManager
 arch-chroot /mnt systemctl enable $displayManager
