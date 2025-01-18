@@ -13,7 +13,7 @@ efiPartition="vda3"
 windiowManager="" # like i3wm and dwm
 displayManager="" # like sddm
 installPackages="base base-devel linux linux-firmware git vim neovim neofetch 
-                 xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub efibootmgr" # This Packages You Want To Install
+                 xorg xorg-xprop xorg-xset sudo firefox man-db man-pages" # This Packages You Want To Install
 hostname=""
 username=""
 
