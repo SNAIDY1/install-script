@@ -3,13 +3,15 @@ source install-script
 
 mkinitcpio -P
 
-echo "$STEP Root Password $ENDCOLORING"
+echo -e "$STEP Root Password $ENDCOLORING"
 passwd
 
-echo "$STEP Username Password"
+echo -e "$STEP Username Password"
 useradd -m -G users,audio,lp,optical,storage,video,wheel,power -s /bin/bash $username
 
 mkdir /boot/efi
 
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
+
+echo -e "$WARNING Remove \"last\" file, because you dont need it $ENDCOLORING"
