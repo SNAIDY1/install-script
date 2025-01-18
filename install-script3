@@ -17,7 +17,7 @@ mount /dev/${disk}2 /mnt
 mount --mkdir /dev/${disk}1 /mnt/boot
 
 pacstrap -K /mnt base base-devel linux linux-firmware git vim neovim neofetch \
-          xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub efibootmgr networkmanager alaritty
+          xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub efibootmgr networkmanager kitty
 
 genfstab -U /mnt >> /mnt/etc/fstab
 ln -sf /usr/share/zoneinfo/UTC /mnt/etc/localtime
@@ -38,6 +38,15 @@ arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootlo
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 arch-chroot /mnt systemctl enable NetworkManager
+echo "Choose Window Manager: "
+Select WM i3 awesomewm bspwm
+if [ -n "$WM" ] ;then
+   arch-chroot /mnt pacman -S --noconfirm $WM
+   break
+else
+echo "Please Choose From 1 to 3"
+fi
+done
 
 
 #arch-chroot /mnt pacman -S --noconfirm i3-wm i3status dmenu
