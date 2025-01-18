@@ -6,7 +6,7 @@ mkinitcpio -P
 echo -e "$STEP Root Password $ENDCOLORING"
 passwd
 
-echo -e "$STEP Username Password"
+echo -e "$STEP Username Password $ENDCOLORING"
 useradd -m -G users,audio,lp,optical,storage,video,wheel,power -s /bin/bash $username
 
 mkdir /boot/efi
