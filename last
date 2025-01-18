@@ -1,6 +1,8 @@
 #!/bin/bash
 source install-script
 
+sudo pacman -S grub efibootmgr
+
 mkinitcpio -P
 
 echo -e "$STEP Root Password $ENDCOLORING"
