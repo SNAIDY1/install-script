@@ -4,46 +4,60 @@
 #                       Arch Linux Intallation Script
 #----------------------------------------------------------------------------
 
+# --- Step 1 : Keybaord ---
 loadkeys us
 
+# --- Step 2 : Disk ---
 lsblk
 read -p "Disk: " disk
-
 parted -s /dev/$disk mklabel gpt
 parted -s /dev/$disk mkpart primary fat32 1MiB 1025MiB
 parted -s /dev/$disk set 1 esp on
 parted -s /dev/$disk mkpart primary ext4 1025MiB 100%
 
+# --- Step 3 : Format ---
 mkfs.fat -F 32 /dev/${disk}1
 mkfs.ext4 /dev/${disk}2
 
+# --- Step 4 : Mount ---
 mount /dev/${disk}2 /mnt
 mount --mkdir /dev/${disk}1 /mnt/boot
 
+# --- Step 5 : Install Packages ---
 pacstrap -K /mnt base base-devel linux linux-firmware git vim neovim neofetch \
           xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub efibootmgr networkmanager kitty
 
+# --- Step 6 : fstab ---
 genfstab -U /mnt >> /mnt/etc/fstab
+
+# --- Step 7 : Timezone ---
 ln -sf /usr/share/zoneinfo/UTC /mnt/etc/localtime
+
+# --- Step 8 : Locale ---
 echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
 echo "en_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen
 arch-chroot /mnt locale-gen
 
+# --- Step 9 : Hostname ---
 read -p "hostname: " hostname
 echo "$hostname" >> /mnt/etc/hostname
 
+# --- Step 10 : Root password ---
 arch-chroot /mnt passwd
 
+# --- Step 11 : Username and password---
 read -p "username: " username
 arch-chroot /mnt useradd -m -G users,storage,video,audio,wheel -s /bin/bash "$username"
 arch-chroot /mnt passwd "$username"
 
+# --- Step 12 : Grub ---
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
+# --- Step 13 : NetworkManager ---
 arch-chroot /mnt systemctl enable NetworkManager
 
-
+# --- Step 14 : WindwosManger ---
 echo "Choose Window Manager: "
 select WM in i3 awesomewm bspwm
 do
@@ -55,9 +69,7 @@ do
    fi
 done
 
-
-#arch-chroot /mnt pacman -S --noconfirm i3-wm i3status dmenu
-
+# --- Step 15 : DisplayManger ---
 read -p "display manager (sddm,lightdm): " displayManager
 
 if [ "$displayManager" == "sddm" ]; then
@@ -68,4 +80,5 @@ elif [ "$displayManager" == "lightdm" ]; then
     arch-chroot /mnt systemctl enable lightdm
 fi
 
+# --- Finish ---
 echo "Made Arch Linux Discord:.t5a Reboot now!"
