@@ -8,7 +8,7 @@ ENDCOLORING="\e[0m"
 
 # User Variables
 rootPartition="/"
-swapPartition=""
+#swapPartition=""
 efiPartition="/boot"
 windowManager="" # like i3wm and dwm
 displayManager="" # like sddm
@@ -25,7 +25,7 @@ cfdisk
 echo -e "$STEP Setting partition type $ENDCOLORING"
 sleep 2
 mkfs.ext4 /dev/$rootPartition
-mkswap /dev/$swapPartition
+#mkswap /dev/$swapPartition
 mkfs.fat -F 32 /dev/$efiPartition
 
 mount /dev/$rootPartition /mnt
