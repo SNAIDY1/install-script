@@ -1,4 +1,12 @@
 #!/bin/bash
+####### THIS SCRIPT IS FOR UEFI FIRMWARES #######
+
+# Coloring
+STEP="\e[36m"
+WARNING="\e[32m"
+ENDCOLORING="\e[0m"
+
+# User Variables
 rootPartition="vda1"
 swapPartition="vda2"
 efiPartition="vda3"
@@ -6,11 +14,16 @@ windiowManager="" # like i3wm and dwm
 displayManager="" # like sddm
 installPackages="base base-devel linux linux-firmware git vim neovim neofetch 
                  xorg xorg-xprop xorg-xset sudo firefox man-db man-pages" # This Packages You Want To Install
-host=""
+hostname=""
+username=""
 
 loadkeys us
+echo "$STEP Just create partitons without setting partition type $ENDCOLORING"
+sleep 2
 cfdisk
 
+echo "$STEP Setting partition type $ENDCOLORING"
+sleep 2
 mkfs.ext4 /dev/$rootPartition
 mkswap /dev/$swapPartition
 mkfs.fat -F 32 /dev/$efiPartition
@@ -19,18 +32,14 @@ mount /dev/$rootPartition /mnt
 mount --mkdir /dev/$efiPartition /mnt/boot
 swapon /dev/$swapPartition
 
-pacstrap -K /mnt $installPackages $windiowManager $displayManager
+pacstrap -K /mnt $installPackages $windiowManager $displayManager -y
 genfstab -U /mnt >>/mnt/etc/fstab
 ln -sf /usr/share/zoneinfo/UTC /mnt/etc/localtime
 
 echo LANG=en_US.UTF-8 >>/mnt/etc/locale.conf
-echo $host >>/mnt/etc/hostname
+echo $hostname >>/mnt/etc/hostname
 
-echo Changing The Root To /mnt
-arch-chroot /mnt
+echo "$STEP Changing the root to /mnt $ENDCOLORING"
+echo "$WARNING Please run This Program After Changing The Root To /mnt: $ENDCOLORING"
 
-mkinitcpio -P
-passwd
-
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
-grub-mkconfig -o /boot/grub/grub.cfg
+# Why I Made This Script?: Because i don't like archinstall and i want to just writing.
