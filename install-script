@@ -7,13 +7,13 @@ WARNING="\e[32m"
 ENDCOLORING="\e[0m"
 
 # User Variables
-rootPartition="vda1"
-swapPartition="vda2"
-efiPartition="vda3"
+rootPartition="/"
+swapPartition=""
+efiPartition="/boot"
 windowManager="" # like i3wm and dwm
 displayManager="" # like sddm
 installPackages="base base-devel linux linux-firmware git vim neovim neofetch 
-                 xorg xorg-xprop xorg-xset sudo firefox man-db man-pages" # This Packages You Want To Install
+                 xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub" # This Packages You Want To Install
 hostname=""
 username=""
 
