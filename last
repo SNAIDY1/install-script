@@ -1,8 +1,6 @@
 #!/bin/bash
 source install-script
 
-arch-chroot /mnt
-
 mkinitcpio -P
 
 echo "$STEP Root Password $ENDCOLORING"
