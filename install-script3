@@ -39,7 +39,7 @@ arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 arch-chroot /mnt systemctl enable NetworkManager
 
-read -p "display manager (sddm,lightdm): " displayManager
+read -p "display manager (sddm,lightdm,i3): " displayManager
 
 if [ "$displayManager" == "sddm" ]; then
     arch-chroot /mnt pacman -S --noconfirm sddm
