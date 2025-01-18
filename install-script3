@@ -39,7 +39,10 @@ arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 arch-chroot /mnt systemctl enable NetworkManager
 
-read -p "display manager (sddm,lightdm,i3): " displayManager
+read -p "display manager (sddm,lightdm): " displayManager
+read -p "window manager (i3,dwm): " windowManager
+
+sudo pacman -S $displayManager $windowManager
 arch-chroot /mnt systemctl enable $displayManager
 
 echo "Made Arch Linux Discord:.t5a Reboot now!"
