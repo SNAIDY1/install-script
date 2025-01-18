@@ -39,7 +39,9 @@ ln -sf /usr/share/zoneinfo/UTC /mnt/etc/localtime
 echo LANG=en_US.UTF-8 >>/mnt/etc/locale.conf
 echo $hostname >>/mnt/etc/hostname
 
-echo -e "$STEP Changing the root to /mnt $ENDCOLORING"
-echo -e "$WARNING Please run This Program After Changing The Root To /mnt: $ENDCOLORING"
+
+echo -e "$WARNING Please run This Program After Changing The Root To /mnt: last $ENDCOLORING"
+arch-chroot /mnt
+
 
 # Why I Made This Script?: Because i don't like archinstall and i want to just writing.
