@@ -45,7 +45,7 @@ select_partition() {
 # Function to install base system
 install_base() {
     echo -e "$STEP Installing base system and additional packages... $ENDCOLORING"
-    pacstrap -K /mnt base base-devel linux linux-firmware git vim neovim neofetch \
+    pacstrap -K /mnt base base-devel linux linux-firmware git vim neovim neofetch alacritty \
               xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub efibootmgr networkmanager \
               $windowManager $displayManager
 }
