@@ -1,72 +1,120 @@
 #!/bin/bash
-
 ####### THIS SCRIPT IS FOR UEFI FIRMWARES #######
 
 # Coloring
 STEP="\e[36m"
 WARNING="\e[33m"
+ERROR="\e[31m"
+SUCCESS="\e[32m"
 ENDCOLORING="\e[0m"
 
-# User Variables
-rootPartition="sda3"  
-#swapPartition="sda2"  
-efiPartition="sda1"   
-windowManager="i3"    
-displayManager="sddm" 
-installPackages="base base-devel linux linux-firmware git vim neovim neofetch 
-                 xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub efibootmgr" # Packages to install
-hostname="archlinux"  
-username="user"       
+# Function to check internet connection
+check_internet() {
+    echo -e "$STEP Checking internet connection... $ENDCOLORING"
+    if ! ping -c 1 archlinux.org &> /dev/null; then
+        echo -e "$ERROR No internet connection! Please connect to the internet and try again. $ENDCOLORING"
+        exit 1
+    fi
+    echo -e "$SUCCESS Internet connection is active. $ENDCOLORING"
+}
 
-# Load keyboard layout
-loadkeys us
+# Function to check if the system is in UEFI mode
+check_uefi() {
+    echo -e "$STEP Checking if the system is in UEFI mode... $ENDCOLORING"
+    if [[ ! -d /sys/firmware/efi/efivars ]]; then
+        echo -e "$ERROR The system is not in UEFI mode. Please boot in UEFI mode and try again. $ENDCOLORING"
+        exit 1
+    fi
+    echo -e "$SUCCESS System is in UEFI mode. $ENDCOLORING"
+}
 
-echo -e "$STEP Just create partitions without setting partition type $ENDCOLORING"
-sleep 2
-cfdisk
+# Function to list available disks and partitions
+list_disks() {
+    echo -e "$STEP Available disks and partitions: $ENDCOLORING"
+    lsblk
+}
 
-echo -e "$STEP Setting partition type $ENDCOLORING"
-sleep 2
+# Function to select a partition
+select_partition() {
+    local prompt=$1
+    echo -e "$prompt"
+    read -p "Enter the partition (e.g., sda1): " partition
+    echo "$partition"
+}
+
+# Function to install base system
+install_base() {
+    echo -e "$STEP Installing base system and additional packages... $ENDCOLORING"
+    pacstrap -K /mnt base base-devel linux linux-firmware git vim neovim neofetch \
+              xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub efibootmgr networkmanager \
+              $windowManager $displayManager
+}
+
+# Function to configure the system
+configure_system() {
+    echo -e "$STEP Configuring the system... $ENDCOLORING"
+    genfstab -U /mnt >> /mnt/etc/fstab
+    ln -sf /usr/share/zoneinfo/UTC /mnt/etc/localtime
+    echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
+    echo "en_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen
+    arch-chroot /mnt locale-gen
+    echo "$hostname" >> /mnt/etc/hostname
+}
+
+# Function to set root password
+set_root_password() {
+    echo -e "$WARNING Set root password $ENDCOLORING"
+    arch-chroot /mnt passwd
+}
+
+# Function to create a new user
+create_user() {
+    echo -e "$STEP Creating a new user... $ENDCOLORING"
+    read -p "Enter the username: " username
+    arch-chroot /mnt useradd -m -G wheel -s /bin/bash "$username"
+    echo -e "$WARNING Set password for user $username $ENDCOLORING"
+    arch-chroot /mnt passwd "$username"
+}
+
+# Function to install and configure bootloader
+install_bootloader() {
+    echo -e "$STEP Installing and configuring GRUB bootloader... $ENDCOLORING"
+    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+# Function to enable services
+enable_services() {
+    echo -e "$STEP Enabling essential services... $ENDCOLORING"
+    arch-chroot /mnt systemctl enable NetworkManager
+    arch-chroot /mnt systemctl enable "$displayManager"
+}
+
+# Main script
+check_internet
+check_uefi
+list_disks
+
+rootPartition=$(select_partition "$STEP Enter the root partition (e.g., sda3): $ENDCOLORING")
+efiPartition=$(select_partition "$STEP Enter the EFI partition (e.g., sda1): $ENDCOLORING")
+
+echo -e "$STEP Formatting partitions... $ENDCOLORING"
 mkfs.ext4 /dev/$rootPartition
-#mkswap /dev/$swapPartition
 mkfs.fat -F 32 /dev/$efiPartition
 
-# Mount partitions
+echo -e "$STEP Mounting partitions... $ENDCOLORING"
 mount /dev/$rootPartition /mnt
 mount --mkdir /dev/$efiPartition /mnt/boot
-#swapon /dev/$swapPartition
 
-# Install base system and additional packages
-pacstrap -K /mnt $installPackages $windowManager $displayManager
+echo -e "$STEP Selecting window manager and display manager... $ENDCOLORING"
+read -p "Enter the window manager (e.g., i3, dwm): " windowManager
+read -p "Enter the display manager (e.g., sddm, lightdm): " displayManager
 
-# Generate fstab
-genfstab -U /mnt >> /mnt/etc/fstab
+install_base
+configure_system
+set_root_password
+create_user
+install_bootloader
+enable_services
 
-# Set timezone
-ln -sf /usr/share/zoneinfo/UTC /mnt/etc/localtime
-
-# Set locale
-echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
-echo "en_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen
-arch-chroot /mnt locale-gen
-
-# Set hostname
-echo $hostname >> /mnt/etc/hostname
-
-# Set root password
-echo -e "$WARNING Set root password $ENDCOLORING"
-arch-chroot /mnt passwd
-
-# Create a new user
-arch-chroot /mnt useradd -m -G wheel -s /bin/bash $username
-echo -e "$WARNING Set password for user $username $ENDCOLORING"
-arch-chroot /mnt passwd $username
-
-# Install and configure bootloader
-arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-
-# Enable display manager
-arch-chroot /mnt systemctl enable $displayManager
-
-echo -e "$WARNING Installation complete! You can now reboot your system. $ENDCOLORING"
+echo -e "$SUCCESS Installation complete! You can now reboot your system. $ENDCOLORING"
