@@ -10,7 +10,7 @@ ENDCOLORING="\e[0m"
 rootPartition="/"
 #swapPartition=""
 efiPartition="/boot"
-windowManager="" # like i3wm and dwm
+windowManager=""  # like i3wm and dwm
 displayManager="" # like sddm
 installPackages="base base-devel linux linux-firmware git vim neovim neofetch 
                  xorg xorg-xprop xorg-xset sudo firefox man-db man-pages grub" # This Packages You Want To Install
@@ -44,5 +44,5 @@ cp last /mnt
 echo -e "$WARNING Please run This Program After Changing The Root To /mnt: last $ENDCOLORING"
 arch-chroot /mnt
 
-
 # Why I Made This Script?: Because i don't like archinstall and i want to just writing.
+# EDITED BY S1
