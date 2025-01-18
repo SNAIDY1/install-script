@@ -5,20 +5,32 @@
 #----------------------------------------------------------------------------
 
 # --- Color ---
-Green='\033[0;32m'
+R='\033[0;31m'         # Red
+G='\033[0;32m'         # Green
+B='\033[0;34m'         # Blue
+Y='\033[0;33m'         # Yellow
+N='\033[0m'            # No Color
+
+echo -e "${R},${G},${B},${N}"
 
 # --- Step 1 : Keybaord ---
+echo -e "${B}Setting keybord layout to US${N}"
 loadkeys us
 
 # --- Step 2 : Disk ---
+echo -e "${G}List available disks${N}"
 lsblk
-read -p "Disk: " disk
+read -p "Enter Disk Name: " disk
+
+# --- Step 3 : Disk partitions ---
+echo -e "${Y}Disk partitions${N}"
 parted -s /dev/$disk mklabel gpt
 parted -s /dev/$disk mkpart primary fat32 1MiB 1025MiB
 parted -s /dev/$disk set 1 esp on
 parted -s /dev/$disk mkpart primary ext4 1025MiB 100%
 
-# --- Step 3 : Format ---
+# --- Step 4 : Format ---
+echo -e "${R}Format disks${N}"
 mkfs.fat -F 32 /dev/${disk}1
 mkfs.ext4 /dev/${disk}2
 
