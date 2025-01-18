@@ -4,6 +4,9 @@
 #                       Arch Linux Intallation Script
 #----------------------------------------------------------------------------
 
+# --- Color ---
+Green='\0;33[0;32m'
+
 # --- Step 1 : Keybaord ---
 loadkeys us
 
