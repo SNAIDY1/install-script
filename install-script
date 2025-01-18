@@ -45,4 +45,3 @@ echo -e "$WARNING Please run This Program After Changing The Root To /mnt: last 
 arch-chroot /mnt
 
 # Why I Made This Script?: Because i don't like archinstall and i want to just writing.
-# EDITED BY S1
